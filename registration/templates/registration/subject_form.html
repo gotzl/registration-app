@@ -1,0 +1,27 @@
+{% extends "registration/base.html" %}
+{% block content %}
+{% load i18n %}
+
+<div style="margin: 30 0 30 0">
+{% if object.status_confirmed %}
+<div class="btn green">
+{% trans "Status confirmed." %}
+</div>
+{% else %}
+<a href="{% url 'subject-confirm' object.token %}" class="btn red">
+    {% trans "Status not confirmed. Click here to confirm your Registration." %}
+</a>
+{% endif %}
+</div>
+
+{% load material_form %}
+<form method="post">{% csrf_token %}
+    {% form form=form %}{% endform %}
+    <button type="submit" name="_submit" class="btn">{% trans "Submit" %}</button>
+</form>
+
+<a href="{% url 'subject-delete' object.token %}" class="btn red">
+    {% trans "Delete this registration" %}
+</a>
+
+{% endblock %}

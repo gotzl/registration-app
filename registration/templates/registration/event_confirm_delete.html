@@ -1,0 +1,10 @@
+{% extends "registration/base.html" %}
+{% block content %}
+
+{% load material_form %}
+<form method="post">{% csrf_token %}
+    <p>Are you sure you want to delete {{ object }}?</p>
+    <input type="submit" value="Confirm" class="btn red">
+</form>
+
+{% endblock %}

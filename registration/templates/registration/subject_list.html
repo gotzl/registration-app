@@ -1,0 +1,35 @@
+{% extends "registration/base.html" %}
+{% block content %}
+
+<style>
+    tr:hover {
+        background-color: #c9cac8;
+        cursor: pointer;
+    }
+</style>
+
+<h1>Subjects</h1>
+{% load material_form %}
+<form>{% csrf_token %}
+    {% form form=filter %}{% endform %}
+</form>
+
+{% load render_table from django_tables2 %}
+{% render_table object_list %}
+
+<a href="{% url 'subjects-create' %}" class="btn green">Create</a>
+
+<script>
+$('table tbody tr').click(function () {
+    let subject = $(this).closest('tr').find('td').first().text();
+    window.location = 'subjects/'+subject;
+});
+
+function filter(obj) {
+    if (obj.value)
+        window.location = 'subjects?event='+obj.value;
+    else window.location = 'subjects'
+}
+
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "registration/base.html" %}
+{% block content %}
+
+{% load material_form %}
+{% load i18n %}
+<form method="post">{% csrf_token %}
+    <p>{% blocktrans %}Are you sure you want to delete the registration for {{ object }}?{% endblocktrans %}</p>
+    <button type="submit" name="_submit" class="btn red">{% trans "Confirm" %}</button>
+</form>
+
+{% endblock %}

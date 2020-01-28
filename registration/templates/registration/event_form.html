@@ -1,0 +1,16 @@
+{% extends "registration/base.html" %}
+{% block content %}
+
+{% load material_form %}
+<form method="post">{% csrf_token %}
+    {% form form=form %}{% endform %}
+    <button type="submit" name="_submit" class="btn">Submit</button>
+</form>
+
+
+<a  href="{% url 'events-participants' object.id %}" download class="btn green">
+    Download Participant List</a>
+<a href="{% url 'events-delete' object.id %}" class="btn red">
+    Delete this event</a>
+
+{% endblock %}

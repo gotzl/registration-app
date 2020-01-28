@@ -1,0 +1,13 @@
+{% extends "registration/base.html" %}
+{% block content %}
+
+<div>
+    {% load i18n %}
+    <div style="margin: 30 0 30 0">
+    <div class="btn green">
+    {% blocktrans %}Your registration for event {{event}} is confirmed!{% endblocktrans %}
+    </div></div>
+    <a href="JavaScript:window.close()">{% trans "Close page." %} </a>
+</div>
+
+{% endblock %}

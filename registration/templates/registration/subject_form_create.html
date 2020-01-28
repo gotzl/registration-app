@@ -1,0 +1,11 @@
+{% extends "registration/base.html" %}
+{% block content %}
+
+{% load material_form %}
+<form method="post">{% csrf_token %}
+    {% form form=form %}{% endform %}
+    <button type="submit" name="_submit" class="btn">{% load i18n %}
+        {% trans "Submit" %}</button>
+</form>
+
+{% endblock %}

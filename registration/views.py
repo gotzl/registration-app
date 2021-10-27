@@ -123,8 +123,8 @@ class SubjectForm(forms.ModelForm):
 
         # assign seats
         subs = Subject.objects.filter(event=ev).order_by('seats')
-        taken = [int(s.seats) for s in subs]
-        seats = []
+        taken, seats = [], []
+        for s in subs: taken.extend(map(int, s.seats.split(',')))
         # seat numbers start at 1
         for i in range(1, ev.num_total_seats+1):
             if i not in taken: seats.append(i)
@@ -200,6 +200,7 @@ class DeleteSubjectView(generic.DeleteView):
     model = Subject
     slug_field = 'token'
     success_url = reverse_lazy('index')
+    template_name = 'registration/subject_confirm_delete.html'
 
 
 class FilterForm(forms.Form):

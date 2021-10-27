@@ -8,7 +8,7 @@
 {% trans "Status confirmed." %}
 </div>
 {% else %}
-<a href="{% url 'subject-confirm' object.token %}" class="btn red">
+<a href="{% url 'subject-confirm' object.token %}" class="btn red" style="height: auto">
     {% trans "Status not confirmed. Click here to confirm your Registration." %}
 </a>
 {% endif %}

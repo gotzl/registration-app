@@ -4,7 +4,7 @@ from io import StringIO
 import os
 import string
 import subprocess
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, ngettext_lazy
 
 
 LATEX_TEMPLATE = string.Template(
@@ -82,6 +82,7 @@ def create_table(subjects):
 
     if len(subjects)>0:
         title = str(subjects[0].event)
+        seats = subjects[0].event.num_max_per_subject
 
     rows = StringIO()
     for i, sub in enumerate(subjects):
@@ -89,16 +90,17 @@ def create_table(subjects):
             str(i+1),
             sub.name,
             sub.given_name,
-            sub.email,
-            str(sub.num_seats)]))
+            sub.email]))
         row.extend([
+            sub.seats,
             '\\ding{51}' if sub.status_confirmed else '\\ding{55}',
             ''
         ])
         rows.write('%s\\\\ \\hline \n' % ' & '.join(row))
 
     header = '%s\\\\ \n' % ' & '.join(
-        map(str, ['', _('name'), _('given_name'), _('email'), _('seats'), _('confirmed'), _('present')]))
+        map(str, ['', _('name'), _('given_name'), _('email'), 
+            ngettext_lazy('seat','seats', seats), _('confirmed'), _('present')]))
 
     latex = LATEX_TEMPLATE.safe_substitute(
         options=options_latex, documentclass=documentclass_name,

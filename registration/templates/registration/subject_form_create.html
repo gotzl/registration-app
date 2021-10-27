@@ -3,7 +3,14 @@
 
 {% load material_form %}
 <form method="post">{% csrf_token %}
-    {% form form=form %}{% endform %}
+    {% form %}
+        {% part form.name prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}
+        {% part form.given_name prefix %}<i class="material-icons prefix">account_box</i>{% endpart %}    
+        {% part form.email prefix %}<i class="material-icons prefix">email</i>{% endpart %}
+        {% if form.phone %}
+            {% part form.phone prefix %}<i class="material-icons prefix">call</i>{% endpart %}
+        {% endif %}
+    {% endform %}
     <button type="submit" name="_submit" class="btn">{% load i18n %}
         {% trans "Submit" %}</button>
 </form>

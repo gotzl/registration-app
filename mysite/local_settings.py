@@ -1,11 +1,4 @@
 import os
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = # create a key with eg 'openssl rand -base64 32', one may also put it directly here
-
-# Default is to only accept connections from localhost.
-# If you feel save and you're behind a proxy, use ALLOWED_HOSTS = ["*"] to allow connections from everywhere.
-# ALLOWED_HOSTS = ["*"]
-
 
 # LDAP authentication example configuration, requires django-auth-ldap package
 # try:
@@ -41,10 +34,3 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_PASSWORD = '__mailuserpw__'
 # EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = '__from-email__'
-
-
-# url path to the page, in case it's hosted under a subpath,
-# ie if the app is hosted under 'www.somewhere.com/someevent/', use '/someevent' here
-URL_OFFSET = '/'
-
-PAGETITLE = 'some-title'

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import json
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -27,8 +28,24 @@ SECRET_KEY = os.environ['SECRET_KEY'] \
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.getenv('DEBUG', 'False').lower() == 'true' else False
 
+# SECURITY WARNING: the default allows connections from everywhere!
 ALLOWED_HOSTS = json.loads(os.environ['ALLOWED_HOSTS']) \
-    if 'ALLOWED_HOSTS' in os.environ else []
+    if 'ALLOWED_HOSTS' in os.environ else ['*']
+
+# the url of the page
+URL = os.environ['URL'] \
+    if 'URL' in os.environ else 'localhost'
+# url path to the page, in case it's hosted under a subpath,
+# ie if the app is hosted under 'www.somewhere.com/someevent/', use '/someevent' here
+URL_OFFSET = os.environ['URL_OFFSET'] \
+    if 'URL_OFFSET' in os.environ else '/'
+
+# the title of the page
+PAGETITLE = os.environ['PAGETITLE'] \
+    if 'PAGETITLE' in os.environ else 'some-title'
+
+# Data to store during registration: 'SubjectBase' or 'SubjectExtended', see models.py
+SUBJECT_CLASS = 'SubjectBase'
 
 try:
     from mysite.local_settings import *
@@ -107,13 +124,24 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if os.getenv('DB_TYPE', '').lower() == 'postgres':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.getenv('DB_NAME', 'registration'),
+            'USER': os.getenv('DB_USER', 'postgres'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'postgres'),
+            'HOST': os.getenv('DB_HOST', 'postgres'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+        }
     }
-}
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -136,11 +164,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 # Some URL definitions
-LOGIN_REDIRECT_URL = 'registration/events'
-LOGOUT_REDIRECT_URL = 'registration/'
+LOGIN_REDIRECT_URL = 'events'
+LOGOUT_REDIRECT_URL = ''
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = os.path.join(URL_OFFSET, STATIC_URL)
@@ -149,3 +177,5 @@ LOGIN_URL = os.path.join(URL_OFFSET, 'accounts/login')
 LOGIN_REDIRECT_URL = os.path.join(URL_OFFSET, LOGIN_REDIRECT_URL)
 LOGOUT_REDIRECT_URL = os.path.join(URL_OFFSET, LOGOUT_REDIRECT_URL)
 FORCE_SCRIPT_NAME = URL_OFFSET
+
+BASE_URL = '%s%s'%(URL, URL_OFFSET)

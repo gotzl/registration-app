@@ -11,10 +11,12 @@ from django.views import generic
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, ngettext_lazy
 
+from material import Layout, Fieldset, Row, Span2, Span5
+
 from registration.models import Subject, Event
 from registration.sub_table_tex import create_table
 
-from mysite.settings import DEFAULT_FROM_EMAIL
+from mysite import settings
 
 
 def active_events():
@@ -51,6 +53,22 @@ class CustomModelChoiceField(models.ModelChoiceField):
 
 
 class SubjectForm(forms.ModelForm):
+    layout = Layout(
+        Row('event'),
+        Row('num_seats'), 
+        Fieldset('Personal Information',
+            Row('given_name', 'name'),
+            Row('email', 'phone'),
+            Row(Span2('post_code'), Span5('city')),
+            'address'),
+        ) if settings.SUBJECT_CLASS == 'SubjectExtended' else Layout(
+            Row('event'),
+            Row('num_seats'),
+            Fieldset('Personal Information',
+                     Row('given_name', 'name'),
+                     Row('email')),
+            )
+
     def __init__(self, *args, **kwargs):
         super(SubjectForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
@@ -77,10 +95,7 @@ class SubjectForm(forms.ModelForm):
                 params={'num_max': ev.num_max_per_subject})
 
         if self.instance and instance.pk:
-            # seats taken includes only seats of confirmed registrations
             taken = ev.seats_taken
-            if not instance.status_confirmed:
-                taken += instance.num_seats
 
             # allow subject to decrease registration even if all seats are taken
             if taken >= ev.num_total_seats:
@@ -106,11 +121,27 @@ class SubjectForm(forms.ModelForm):
                     'max_seats_exceeded_pl_%(num_free)i',
                     ev.num_total_seats-taken), code='invalid', params={'num_free': ev.num_total_seats-taken})
 
+        # assign seats
+        subs = Subject.objects.filter(event=ev).order_by('seats')
+        taken = [int(s.seats) for s in subs]
+        seats = []
+        # seat numbers start at 1
+        for i in range(1, ev.num_total_seats+1):
+            if i not in taken: seats.append(i)
+            if len(seats) == self.cleaned_data['num_seats']:
+                break
+
+        if len(seats) != self.cleaned_data['num_seats']:
+            raise ValidationError("Unable to assign seats", code='invalid')
+
+        instance.seats = ','.join(map(str,seats))
         return self.cleaned_data['num_seats']
 
     class Meta:
         model = Subject
         fields = ['name', 'given_name', 'email', 'event', 'num_seats']
+        if settings.SUBJECT_CLASS == 'SubjectExtended':
+            fields.extend(['phone', 'address', 'post_code', 'city'])
         error_messages = {
             NON_FIELD_ERRORS: {
                 'unique_together': "Es existiert bereits eine Registrierung für diese %(field_labels)s.",
@@ -121,13 +152,6 @@ class SubjectForm(forms.ModelForm):
 class CreateSubjectView(EventsAvailableMixin, generic.CreateView):
     form_class = SubjectForm
     template_name = 'registration/subject_form_create.html'
-
-    subject = _('Registration for %s')
-    message = _('mail_body_%(name)s_%(event)s_%(confirm_url)s_%(modify_url)s')
-    from_email = DEFAULT_FROM_EMAIL
-    confirm_url = '%s%s/confirm'
-    modify_url = '%s%s/modify'
-
     success_url = reverse_lazy('submitted')
 
     def get_context_data(self, **kwargs):
@@ -137,31 +161,6 @@ class CreateSubjectView(EventsAvailableMixin, generic.CreateView):
             queryset = active_events()
         )
         return context
-
-    def form_valid(self, form):
-        # save the form
-        redirect = super().form_valid(form)
-
-        # create confirmation mail
-        confirm_url = CreateSubjectView.confirm_url%(self.request.build_absolute_uri(), self.object.token)
-        modify_url = CreateSubjectView.modify_url%(self.request.build_absolute_uri(), self.object.token)
-        subject = CreateSubjectView.subject%self.object.event.title
-        message = CreateSubjectView.message%dict(
-            name=self.object.given_name,
-            event=self.object.event,
-            confirm_url=confirm_url,
-            modify_url=modify_url
-        )
-
-        # send it
-        try:
-            send_mail(subject, message, CreateSubjectView.from_email, [self.object.email])
-        except Exception as e:
-            print(e)
-            # if sending failed, delete the record
-            self.object.delete()
-            return HttpResponse(_('Cannot send mail.'))
-        return redirect
 
 
 class SubjectView(generic.UpdateView):
@@ -173,7 +172,8 @@ class SubjectView(generic.UpdateView):
 
 class SubjectViewAdmin(LoginRequiredMixin, generic.UpdateView):
     model = Subject
-    fields = ['name', 'given_name', 'email', 'event', 'num_seats', 'status_confirmed']
+    fields = ['name', 'given_name', 'email', 'event', 'num_seats', 
+        'status_confirmed', 'confirmation_request_sent', 'reminder_sent', 'confirmation_sent']
     success_url = reverse_lazy('subjects')
 
 
@@ -190,25 +190,8 @@ def submitted(request):
 
 def confirm(request, token):
     sub = get_object_or_404(Subject.objects.filter(token=token))
-    subject = _('Confirmed registration for %s')
-    message = _('confirmation_body_%(name)s_%(event)s_%(modify_url)s')
-    if not sub.status_confirmed:
-        try:
-            send_mail(
-                subject,
-                message%dict(
-                    name=sub.given_name,
-                    event=sub.event,
-                    modify_url=request.build_absolute_uri(reverse('subject-modify', args=[sub.token]))
-                ),
-                CreateSubjectView.from_email,
-                [sub.email])
-            sub.status_confirmed = True
-            sub.confirmation_sent = True
-            sub.save()
-        except Exception as e:
-            print(e)
-            return HttpResponse(_('Cannot send mail.'))
+    sub.status_confirmed = True
+    sub.save()
     return render(request, 'registration/confirm.html', {'subject': sub, 'event': sub.event})
 
 
@@ -221,7 +204,7 @@ class DeleteSubjectView(generic.DeleteView):
 class FilterForm(forms.Form):
     event = forms.ModelChoiceField(
         queryset=Event.objects.all(),
-        empty_label="(Nothing)",
+        empty_label="(All)",
         widget=forms.Select(attrs={"onChange":'filter(this)'}))
 
 
@@ -262,7 +245,9 @@ class EventViewBase(LoginRequiredMixin):
 
 
 class CreateEventView(EventViewBase, generic.CreateView):
-    fields = ['title', 'date', 'is_active', 'enable_on', 'disable_on', 'num_total_seats', 'num_max_per_subject']
+    fields = ['title', 'date', 'is_active', 'enable_on', 
+        'disable_on', 'num_total_seats', 'num_max_per_subject', 
+        'assigned_seats','reminder_hours','hold_back_hours']
     template_name = 'registration/event_form_create.html'
 
     def get_context_data(self, **kwargs):
@@ -276,7 +261,9 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ['title', 'date', 'is_active', 'enable_on', 'disable_on', 'num_total_seats', 'num_max_per_subject', 'seats_taken']
+        fields = ['title', 'date', 'is_active', 'enable_on', 
+        'disable_on', 'num_total_seats', 'num_max_per_subject', 
+        'assigned_seats', 'seats_taken', 'reminder_hours', 'hold_back_hours']
 
 
 class EventView(EventViewBase, generic.UpdateView):

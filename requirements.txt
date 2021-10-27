@@ -1,4 +1,5 @@
 django==2.2.24
 django-material==1.5.8
 django-tables2==2.1.0
-# django-auth-ldap
+# django-auth-ldap==2.2.0
+psycopg2==2.8.6

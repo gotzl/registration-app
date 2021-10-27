@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 18:36+0100\n"
+"POT-Creation-Date: 2021-10-25 21:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,73 +18,208 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: mysite/settings.py:43
+#: mailing.py:38
+#, python-format
+msgid "Registration for %s"
+msgstr "Registrierung für %s"
+
+#: mailing.py:39
+#, python-format
+msgid ""
+"mail_body_%(name)s_%(event)s_%(hold_back_hours)i_%(confirm_url)s_"
+"%(modify_url)s"
+msgstr ""
+"Hallo %(name)s,\n"
+"bitte bestätigen Sie die Registrierung für die Veranstaltung %(event)s \n"
+"innerhalb %(hold_back_hours)i Stunden durch den Aufruf folgender URL:\n"
+"%(confirm_url)s\n"
+"Sie können Ihre Registrierung über folgenden Link verändern:\n"
+"%(modify_url)s\n"
+"\n"
+"\n"
+"Vielen Dank!"
+
+#: mailing.py:53
+#, python-format
+msgid "Reminder of registration for %s"
+msgstr "Erinnerung an die Registrierung für %s"
+
+#: mailing.py:54
+#, python-format
+msgid ""
+"reminder_body_%(name)s_%(event)s_%(cancel_hours)i_%(confirm_url)s_"
+"%(modify_url)s"
+msgstr ""
+"Hallo %(name)s,\n"
+"Dies ist eine kleine Erinnerung an die bevorstehende Veranstaltung %(event)s "
+"zu\n"
+"der Sie sich angemeldet haben. Sie haben die Registrierung allerdings noch "
+"nicht bestätigt.\n"
+"\n"
+"Bitte bestätigen Sie die Registrierung für die Veranstaltung durch den "
+"Aufruf folgender URL:\n"
+"%(confirm_url)s\n"
+"Sie können Ihre Registrierung über folgenden Link verändern:\n"
+"%(modify_url)s\n"
+"\n"
+"Wenn Sie die Registrierung nicht bestätigen wird sie in %(cancel_hours)i "
+"Stunden gelöscht.\n"
+"\n"
+"Vielen Dank!"
+
+#: mailing.py:68
+#, python-format
+msgid "Confirmed registration for %s"
+msgstr "Bestätigung der Registrierung für %s"
+
+#: mailing.py:69
+#, python-format
+msgid "confirmation_body_%(name)s_%(event)s_%(modify_url)s_%(seats)s"
+msgstr ""
+"Hallo %(name)s,\n"
+"\n"
+"Ihre Registrierung für die Veranstaltung %(event)s ist nun bestätigt.\n"
+"%(seats)s\n"
+"Sie können Ihre Registrierung mit folgendem Link verändern:\n"
+"%(modify_url)s\n"
+"\n"
+"\n"
+"Vielen Dank!"
+
+#: mailing.py:74
+#, python-format
+msgid "subject_seats_%(seat_nums)s"
+msgid_plural "subject_seats_pl_%(seat_nums)s"
+msgstr[0] "Ihre Sitzplatznummer ist '%(seat_nums)s'."
+msgstr[1] "Ihre Sitzplatznummern sind '%(seat_nums)s'."
+
+#: mailing.py:89
+#, python-format
+msgid "Cancellation of registration for %s"
+msgstr "Aufhebung der Registrierung für %s"
+
+#: mailing.py:90
+#, python-format
+msgid "cancellation_body_%(name)s_%(event)s"
+msgstr ""
+"Hallo %(name)s,\n"
+"\n"
+"Ihre Registrierung für die Veranstaltung %(event)s wurde aufgehoben\n"
+"da die Registrierung nicht innerhalb der vorgegebenen Zeit bestätigt wurde.\n"
+"\n"
+"\n"
+"Vielen Dank!"
+
+#: mysite/settings.py:60
 msgid "German"
 msgstr "Deutsch"
 
-#: mysite/settings.py:44
+#: mysite/settings.py:61
 msgid "English"
 msgstr "Englisch"
 
-#: registration/models.py:16
+#: registration/models.py:19
 msgid "enable_on"
 msgstr "Aktivieren am"
 
-#: registration/models.py:17
+#: registration/models.py:20
 msgid "disable_on"
 msgstr "Deaktivieren am"
 
-#: registration/models.py:27
+#: registration/models.py:33
 #, python-format
 msgid "'%(title)s' on %(date)s"
 msgstr "'%(title)s' am %(date)s"
 
-#: registration/models.py:35 registration/sub_table_tex.py:101
+#: registration/models.py:41 registration/sub_table_tex.py:102
 msgid "name"
 msgstr "Name"
 
-#: registration/models.py:36 registration/sub_table_tex.py:101
+#: registration/models.py:42 registration/sub_table_tex.py:102
 msgid "given_name"
 msgstr "Vorname"
 
-#: registration/models.py:37 registration/sub_table_tex.py:101
+#: registration/models.py:43 registration/sub_table_tex.py:102
 msgid "email"
 msgstr "E-Mail"
 
-#: registration/models.py:39
+#: registration/models.py:45
 msgid "event"
 msgstr "Veranstaltung"
 
-#: registration/models.py:40
+#: registration/models.py:46
 msgid "reg_date"
 msgstr "Registrierungs Datum"
 
-#: registration/models.py:41
+#: registration/models.py:47
 msgid "num_seats"
 msgstr "Anzahl Sitze"
 
-#: registration/models.py:43
+#: registration/models.py:48
+msgid "seats"
+msgstr "Sitzplätze"
+
+#: registration/models.py:50
 msgid "status_confirmed"
 msgstr "Status bestätigt"
 
-#: registration/sub_table_tex.py:101
-msgid "seats"
-msgstr "Sitze"
+#: registration/models.py:51
+msgid "confirmation_request_sent"
+msgstr "Bestätigungs Aufforderung versand"
 
-#: registration/sub_table_tex.py:101
+#: registration/models.py:52
+msgid "confirmation_sent"
+msgstr "Bestätigung versand"
+
+#: registration/models.py:53
+msgid "reminder_sent"
+msgstr "Erinnerung versand"
+
+#: registration/models.py:67
+msgid "address"
+msgstr "Adresse"
+
+#: registration/models.py:68
+msgid "city"
+msgstr "Stadt"
+
+#: registration/models.py:69
+msgid "post_code"
+msgstr "Postleitzahl"
+
+#: registration/models.py:70
+msgid "phone"
+msgstr "Telefon"
+
+#: registration/sub_table_tex.py:103
+msgid "seat"
+msgid_plural "seats"
+msgstr[0] "Sitzplatz"
+msgstr[1] "Sitzplätze"
+
+#: registration/sub_table_tex.py:103
 msgid "confirmed"
 msgstr "Bestätigt"
 
-#: registration/sub_table_tex.py:101
+#: registration/sub_table_tex.py:103
 msgid "present"
 msgstr "Anwesend"
 
 #: registration/templates/registration/confirm.html:8
 #, python-format
 msgid "Your registration for event %(event)s is confirmed!"
-msgstr "Ihre Registrierung für die Veranstaltung %(event)s ist bestätigt."
+msgstr ""
+"Ihre Registrierung für die Veranstaltung %(event)s ist hiermit bestätigt."
 
-#: registration/templates/registration/confirm.html:10
+#: registration/templates/registration/confirm.html:11
+msgid ""
+"A confirmation email will be sent to you which also includes your seat "
+"number."
+msgstr ""
+"Eine Bestätigungs eMail wird an sie versendet welche auch Ihre "
+"Sitzplatznummer enthält."
+
+#: registration/templates/registration/confirm.html:14
 msgid "Close page."
 msgstr "Seite schließen."
 
@@ -118,7 +253,7 @@ msgstr ""
 "Status nicht bestätigt. Klicken Sie hier um Ihre Registrierung zu bestätigen."
 
 #: registration/templates/registration/subject_form.html:20
-#: registration/templates/registration/subject_form_create.html:8
+#: registration/templates/registration/subject_form_create.html:13
 msgid "Submit"
 msgstr "Absenden"
 
@@ -132,11 +267,11 @@ msgstr ""
 "Bitte bestätigen Sie ihre Registrierung über den Link in der E-Mail die "
 "soeben an Sie versand wurde. Sie können die Seite nun schließen."
 
-#: registration/views.py:39
+#: registration/views.py:43
 msgid "booked_out"
 msgstr "Ausgebucht"
 
-#: registration/views.py:71
+#: registration/views.py:91
 #, python-format
 msgid "max_seats_subj_exceeded_%(num_max)i"
 msgid_plural "max_seats_subj_exceeded_pl_%(num_max)i"
@@ -147,11 +282,11 @@ msgstr[1] ""
 "Pro Person können nur %(num_max)i Sitze reserviert werden. Wenden Sie sich "
 "direkt an den Veranstalter wenn Sie mehr Sitze benötigen."
 
-#: registration/views.py:86 registration/views.py:98
+#: registration/views.py:103 registration/views.py:115
 msgid "no_seats_event"
 msgstr "Es sind keine weiteren Sitze für diese Veranstaltung verfügbar."
 
-#: registration/views.py:90 registration/views.py:103
+#: registration/views.py:107 registration/views.py:120
 #, python-format
 msgid "max_seats_exceeded_%(num_free)i"
 msgid_plural "max_seats_exceeded_pl_%(num_free)i"
@@ -160,44 +295,8 @@ msgstr[0] ""
 msgstr[1] ""
 "Es sind nur %(num_free)i weitere Sitze für diese Veranstaltung verfügbar."
 
-#: registration/views.py:123
-#, python-format
-msgid "Registration for %s"
-msgstr "Registrierung für %s"
+#~ msgid "matricl_no"
+#~ msgstr "Immatrikulationsnummer"
 
-#: registration/views.py:124
-#, python-format
-msgid "mail_body_%(name)s_%(event)s_%(confirm_url)s_%(modify_url)s"
-msgstr ""
-"Hallo %(name)s,\n"
-"bitte bestätigen Sie die Registrierung für die Veranstaltung %(event)s durch "
-"den Aufruf folgender URL:\n"
-"%(confirm_url)s\n"
-"Sie können Ihre Registrierung mit folgendem Link verändern:\n"
-"%(modify_url)s\n"
-"\n"
-"\n"
-"Vielen Dank!"
-
-#: registration/views.py:161 registration/views.py:209
-msgid "Cannot send mail."
-msgstr "E-Mail konnte nicht gesenden werden."
-
-#: registration/views.py:191
-#, python-format
-msgid "Confirmed registration for %s"
-msgstr "Bestätigung der Registrierung für %s"
-
-#: registration/views.py:192
-#, python-format
-msgid "confirmation_body_%(name)s_%(event)s_%(modify_url)s"
-msgstr ""
-"Hallo %(name)s,\n"
-"\n"
-"Ihre Registrierung für die Veranstaltung %(event)s ist nun bestätigt.\n"
-"\n"
-"Sie können Ihre Registrierung mit folgendem Link verändern:\n"
-"%(modify_url)s\n"
-"\n"
-"\n"
-"Vielen Dank!"
+#~ msgid "Cannot send mail."
+#~ msgstr "E-Mail konnte nicht gesenden werden."

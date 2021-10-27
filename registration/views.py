@@ -175,6 +175,7 @@ class SubjectViewAdmin(LoginRequiredMixin, generic.UpdateView):
     fields = ['name', 'given_name', 'email', 'event', 'num_seats', 
         'status_confirmed', 'confirmation_request_sent', 'reminder_sent', 'confirmation_sent']
     success_url = reverse_lazy('subjects')
+    template_name = 'registration/subject_form.html'
 
 
 class CreateSubjectViewAdmin(LoginRequiredMixin, generic.CreateView):
@@ -210,6 +211,7 @@ class FilterForm(forms.Form):
 
 class ListSubjectView(LoginRequiredMixin, generic.ListView):
     model = Subject
+    template_name = 'registration/subject_list.html'
 
     def get_queryset(self):
         filter_val = self.request.GET.get('event', None)

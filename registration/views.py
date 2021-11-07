@@ -2,7 +2,6 @@ import os
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
-from django.core.mail import send_mail
 from django.forms import models, ChoiceField
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
@@ -22,6 +21,24 @@ from mysite import settings
 def active_events():
     return Event.objects.filter(
         is_active=True, enable_on__lte=timezone.now(), disable_on__gte=timezone.now())
+
+
+def assign_seats(ev, instance, num_seats):
+    subs = Subject.objects.filter(event=ev).order_by('seats')
+    taken, seats = [], []
+    for s in subs:
+        # don't add subjects seats to list of taken seats, reassign below
+        if instance.pk and s == instance:
+            continue
+        taken.extend(map(int, s.seats.split(',')))
+    # seat numbers start at 1
+    for i in range(1, ev.num_total_seats+1):
+        if i not in taken: seats.append(i)
+        if len(seats) == num_seats:
+            break
+    if len(seats) != num_seats:
+        raise ValidationError("Unable to assign seats", code='invalid')
+    instance.seats = ','.join(map(str, seats))
 
 
 class EventsAvailableMixin:
@@ -121,20 +138,7 @@ class SubjectForm(forms.ModelForm):
                     'max_seats_exceeded_pl_%(num_free)i',
                     ev.num_total_seats-taken), code='invalid', params={'num_free': ev.num_total_seats-taken})
 
-        # assign seats
-        subs = Subject.objects.filter(event=ev).order_by('seats')
-        taken, seats = [], []
-        for s in subs: taken.extend(map(int, s.seats.split(',')))
-        # seat numbers start at 1
-        for i in range(1, ev.num_total_seats+1):
-            if i not in taken: seats.append(i)
-            if len(seats) == self.cleaned_data['num_seats']:
-                break
-
-        if len(seats) != self.cleaned_data['num_seats']:
-            raise ValidationError("Unable to assign seats", code='invalid')
-
-        instance.seats = ','.join(map(str,seats))
+        assign_seats(ev, instance, self.cleaned_data['num_seats'])
         return self.cleaned_data['num_seats']
 
     class Meta:
@@ -147,6 +151,26 @@ class SubjectForm(forms.ModelForm):
                 'unique_together': "Es existiert bereits eine Registrierung für diese %(field_labels)s.",
             }
         }
+
+
+class SubjectFormAdmin(forms.ModelForm):
+    def clean_num_seats(self):
+        instance = getattr(self, 'instance', None)
+        if self.instance and instance.pk:
+            ev = self.instance.event
+        else:
+            if not self.data['event']:
+                return self.cleaned_data['num_seats']
+            ev = self.cleaned_data['event']
+
+        assign_seats(ev, instance, self.cleaned_data['num_seats'])
+        return self.cleaned_data['num_seats']
+
+    class Meta:
+        model = Subject
+        fields = ['name', 'given_name', 'email', 'event', 'num_seats',
+                  'status_confirmed', 'confirmation_request_sent',
+                  'reminder_sent', 'confirmation_sent']
 
 
 class CreateSubjectView(EventsAvailableMixin, generic.CreateView):
@@ -170,19 +194,18 @@ class SubjectView(generic.UpdateView):
     template_name = 'registration/subject_form.html'
 
 
-class SubjectViewAdmin(LoginRequiredMixin, generic.UpdateView):
+class SubjectViewAdminBase(LoginRequiredMixin):
     model = Subject
-    fields = ['name', 'given_name', 'email', 'event', 'num_seats', 
-        'status_confirmed', 'confirmation_request_sent', 'reminder_sent', 'confirmation_sent']
+    form_class = SubjectFormAdmin
     success_url = reverse_lazy('subjects')
+
+
+class SubjectViewAdmin(SubjectViewAdminBase, generic.UpdateView):
     template_name = 'registration/subject_form.html'
 
 
-class CreateSubjectViewAdmin(LoginRequiredMixin, generic.CreateView):
-    model = Subject
-    fields = ['name', 'given_name', 'email', 'event', 'num_seats', 'status_confirmed']
+class CreateSubjectViewAdmin(SubjectViewAdminBase, generic.CreateView):
     template_name = 'registration/subject_form_create.html'
-    success_url = reverse_lazy('subjects')
 
 
 def submitted(request):

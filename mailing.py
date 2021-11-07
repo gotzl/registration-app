@@ -20,8 +20,8 @@ from mysite.settings import DEFAULT_FROM_EMAIL, BASE_URL
 INTERVAL = 30
 # deadtime after a mail has been sent (mail server has 10 Mails/minute restriction)
 DEADTIME = 10
-confirm_url = '%s%s/confirm'
-modify_url = '%s%s/modify'
+confirm_url = lambda base, token: os.path.join(base, token, 'confirm')
+modify_url = lambda base, token: os.path.join(base, token, 'modify')
 
 def do_send_mail(subject, message, to):
     try:
@@ -43,8 +43,8 @@ def confirmation_request_mail(sub):
         name=sub.given_name,
         event=sub.event,
         hold_back_hours=sub.event.hold_back_hours,
-        confirm_url=confirm_url%(BASE_URL, sub.token),
-        modify_url=modify_url%(BASE_URL, sub.token)
+        confirm_url=confirm_url(BASE_URL, sub.token),
+        modify_url=modify_url(BASE_URL, sub.token)
     )
     return do_send_mail(subject, message, sub.email)
 
@@ -58,8 +58,8 @@ def remainder_mail(sub):
         name=sub.given_name,
         event=sub.event,
         cancel_hours=sub.event.hold_back_hours - sub.event.reminder_hours,
-        confirm_url=confirm_url%(BASE_URL, sub.token), 
-        modify_url=modify_url%(BASE_URL, sub.token)
+        confirm_url=confirm_url(BASE_URL, sub.token),
+        modify_url=modify_url(BASE_URL, sub.token)
     )
     return do_send_mail(subject, message, sub.email)
 
@@ -81,7 +81,7 @@ def confirmation_mail(sub):
         name=sub.given_name,
         event=sub.event,
         seats=seats,
-        modify_url=modify_url%(BASE_URL, sub.token),
+        modify_url=modify_url(BASE_URL, sub.token),
     )
     return do_send_mail(subject, message, sub.email)
 

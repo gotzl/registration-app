@@ -311,7 +311,7 @@ class DeleteEventView(EventViewBase, generic.DeleteView):
 def subject_table(request, pk):
     event = get_object_or_404(Event.objects.filter(pk=pk))
     subs = Subject.objects.filter(event=event).order_by('name', 'given_name', 'email')
-    file_path = create_table(subs)
+    file_path = create_table(event, subs)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/pdf")

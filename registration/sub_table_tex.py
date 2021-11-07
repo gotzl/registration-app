@@ -67,7 +67,7 @@ def tex_escape(text):
     return regex.sub(lambda match: conv[match.group()], text)
 
 
-def create_table(subjects):
+def create_table(ev, subjects):
     project_path = os.path.curdir
     build_path = os.path.join(project_path, '.build')
     out_filename = os.path.join(build_path, 'template')
@@ -92,7 +92,7 @@ def create_table(subjects):
             sub.given_name,
             sub.email]))
         row.extend([
-            sub.seats,
+            sub.seats if ev.assigned_seats else sub.num_seats,
             '\\ding{51}' if sub.status_confirmed else '\\ding{55}',
             ''
         ])
@@ -100,7 +100,7 @@ def create_table(subjects):
 
     header = '%s\\\\ \n' % ' & '.join(
         map(str, ['', _('name'), _('given_name'), _('email'), 
-            ngettext_lazy('seat','seats', seats), _('confirmed'), _('present')]))
+            ngettext_lazy('seat', 'seats', seats), _('confirmed'), _('present')]))
 
     latex = LATEX_TEMPLATE.safe_substitute(
         options=options_latex, documentclass=documentclass_name,

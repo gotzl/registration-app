@@ -86,13 +86,13 @@ def create_table(ev, subjects):
 
     rows = StringIO()
     for i, sub in enumerate(subjects):
-        row =  list(map(tex_escape, [
+        row = list(map(tex_escape, [
             str(i+1),
             sub.name,
             sub.given_name,
             sub.email]))
         row.extend([
-            sub.seats if ev.assigned_seats else sub.num_seats,
+            sub.seats if ev.assigned_seats else str(sub.num_seats),
             '\\ding{51}' if sub.status_confirmed else '\\ding{55}',
             ''
         ])

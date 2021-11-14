@@ -318,5 +318,3 @@ def subject_table(request, pk):
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
             return response
     raise Http404
-
-

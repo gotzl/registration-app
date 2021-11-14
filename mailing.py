@@ -36,7 +36,7 @@ def do_send_mail(subject, message, to):
 ## contains the link for the registration confirmation
 def confirmation_request_mail(sub):
     subject = _('Registration for %s')
-    message = _('mail_body_%(name)s_%(event)s_%(hold_back_hours)i_%(confirm_url)s_%(modify_url)s')
+    message = _('mail_body_%(name)s_%(event)s_%(hold_back_hours)i_%(confirm_url)s')
 
     subject = subject%sub.event.title
     message = message%dict(

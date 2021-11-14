@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-25 21:24+0200\n"
+"POT-Creation-Date: 2021-11-14 13:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,15 +26,12 @@ msgstr "Registrierung für %s"
 #: mailing.py:39
 #, python-format
 msgid ""
-"mail_body_%(name)s_%(event)s_%(hold_back_hours)i_%(confirm_url)s_"
-"%(modify_url)s"
+"mail_body_%(name)s_%(event)s_%(hold_back_hours)i_%(confirm_url)s"
 msgstr ""
 "Hallo %(name)s,\n"
 "bitte bestätigen Sie die Registrierung für die Veranstaltung %(event)s \n"
 "innerhalb %(hold_back_hours)i Stunden durch den Aufruf folgender URL:\n"
 "%(confirm_url)s\n"
-"Sie können Ihre Registrierung über folgenden Link verändern:\n"
-"%(modify_url)s\n"
 "\n"
 "\n"
 "Vielen Dank!"
@@ -59,7 +56,7 @@ msgstr ""
 "Bitte bestätigen Sie die Registrierung für die Veranstaltung durch den "
 "Aufruf folgender URL:\n"
 "%(confirm_url)s\n"
-"Sie können Ihre Registrierung über folgenden Link verändern:\n"
+"Sie können Ihre Registrierung über folgenden Link verändern oder löschen:\n"
 "%(modify_url)s\n"
 "\n"
 "Wenn Sie die Registrierung nicht bestätigen wird sie in %(cancel_hours)i "
@@ -205,6 +202,18 @@ msgstr "Bestätigt"
 msgid "present"
 msgstr "Anwesend"
 
+#: registration/templates/registration/base.html:14
+msgid "Registration"
+msgstr "Anmeldung"
+
+#: registration/templates/registration/base.html:35
+msgid "_privacy"
+msgstr "Datenschutz"
+
+#: registration/templates/registration/base.html:36
+msgid "_site_notice"
+msgstr "Impressum"
+
 #: registration/templates/registration/confirm.html:8
 #, python-format
 msgid "Your registration for event %(event)s is confirmed!"
@@ -253,7 +262,7 @@ msgstr ""
 "Status nicht bestätigt. Klicken Sie hier um Ihre Registrierung zu bestätigen."
 
 #: registration/templates/registration/subject_form.html:20
-#: registration/templates/registration/subject_form_create.html:13
+#: registration/templates/registration/subject_form_create.html:15
 msgid "Submit"
 msgstr "Absenden"
 
@@ -264,14 +273,14 @@ msgstr "Diese Registrierung löschen"
 #: registration/templates/registration/submitted.html:6
 msgid "confirm_msg"
 msgstr ""
-"Bitte bestätigen Sie ihre Registrierung über den Link in der E-Mail die "
-"soeben an Sie versand wurde. Sie können die Seite nun schließen."
+"Bitte bestätigen Sie ihre Registrierung über den Link in der E-Mail die in "
+"Kürze an Sie versendet wird. Sie können die Seite nun schließen."
 
-#: registration/views.py:43
+#: registration/views.py:60
 msgid "booked_out"
 msgstr "Ausgebucht"
 
-#: registration/views.py:91
+#: registration/views.py:108
 #, python-format
 msgid "max_seats_subj_exceeded_%(num_max)i"
 msgid_plural "max_seats_subj_exceeded_pl_%(num_max)i"
@@ -282,11 +291,11 @@ msgstr[1] ""
 "Pro Person können nur %(num_max)i Sitze reserviert werden. Wenden Sie sich "
 "direkt an den Veranstalter wenn Sie mehr Sitze benötigen."
 
-#: registration/views.py:103 registration/views.py:115
+#: registration/views.py:120 registration/views.py:132
 msgid "no_seats_event"
 msgstr "Es sind keine weiteren Sitze für diese Veranstaltung verfügbar."
 
-#: registration/views.py:107 registration/views.py:120
+#: registration/views.py:124 registration/views.py:137
 #, python-format
 msgid "max_seats_exceeded_%(num_free)i"
 msgid_plural "max_seats_exceeded_pl_%(num_free)i"

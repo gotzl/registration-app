@@ -44,6 +44,10 @@ URL_OFFSET = os.environ['URL_OFFSET'] \
 PAGETITLE = os.environ['PAGETITLE'] \
     if 'PAGETITLE' in os.environ else 'some-title'
 
+# set true if site or/and privacy notice exist
+SITE_NOTICE = False
+PRIVACY_NOTICE = False
+
 # Data to store during registration: 'SubjectBase' or 'SubjectExtended', see models.py
 SUBJECT_CLASS = 'SubjectBase'
 

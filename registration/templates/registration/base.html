@@ -4,6 +4,7 @@
 {% include 'material/includes/material_js.html' %}
 
 {% load static %}
+{% load i18n %}
 
 <div style="margin: auto; width: 50%; min-width: 600px; background: #e9e9e8;">
     <div style="height: 120px; background: #004a99;">
@@ -11,7 +12,7 @@
             <a href="{% url 'index' %}"><img src="{% static "registration/banner.jpg" %}" style="height: 100%; float: left;"></a>
             <div style="width: 60%; height: 100%; margin-left: 230px; font-family: Times New Roman, FreeSerif, serif;">
                 <h4 style="bottom: 35; right:10; position: absolute; margin: 0; color: white">{{ pagetitle }}</h4>
-                <h5 style="bottom: 10; right:10; position: absolute; margin: 0; color: #c9cac8">Anmeldung</h5>
+                <h5 style="bottom: 10; right:10; position: absolute; margin: 0; color: #c9cac8">{% trans "Registration" %}</h5>
             </div>
         </div>
     </div>
@@ -31,5 +32,12 @@
         {% endblock %}
     </div>
 
-    <div style="height: 20px; background: #004a99;"></div>
+    <div style="height: 20px; background: #004a99;">
+        {% if site_notice %}
+        <a style="float: right; padding-right: 10; color: #c9cac8" href="{% url 'privacy' %}">{% trans "_privacy" %}</a>
+        {% endif %}
+        {% if privacy_notice %}
+        <a style="float: right; padding-right: 10; color: #c9cac8" href="{% url 'site_notice' %}">{% trans "_site_notice" %}</a>
+        {% endif %}
+    </div>
 </div>

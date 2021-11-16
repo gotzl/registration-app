@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-14 13:43+0100\n"
+"POT-Creation-Date: 2021-11-16 12:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,8 +25,7 @@ msgstr ""
 
 #: mailing.py:39
 #, python-format
-msgid ""
-"mail_body_%(name)s_%(event)s_%(hold_back_hours)i_%(confirm_url)s"
+msgid "mail_body_%(name)s_%(event)s_%(hold_back_hours)i_%(confirm_url)s"
 msgstr ""
 "Hello %(name)s,\n"
 "please confirm the registration for the event %(event)s\n"
@@ -106,11 +105,11 @@ msgstr ""
 "\n"
 "Thank you!"
 
-#: mysite/settings.py:60
+#: mysite/settings.py:64
 msgid "German"
 msgstr ""
 
-#: mysite/settings.py:61
+#: mysite/settings.py:65
 msgid "English"
 msgstr ""
 
@@ -193,7 +192,7 @@ msgid_plural "seats"
 msgstr[0] ""
 msgstr[1] ""
 
-#: registration/sub_table_tex.py:103
+#: registration/sub_table_tex.py:103 registration/views.py:104
 msgid "confirmed"
 msgstr ""
 
@@ -201,15 +200,15 @@ msgstr ""
 msgid "present"
 msgstr ""
 
-#: registration/templates/registration/base.html:14
+#: registration/templates/registration/base.html:15
 msgid "Registration"
 msgstr ""
 
-#: registration/templates/registration/base.html:35
+#: registration/templates/registration/base.html:37 registration/views.py:93
 msgid "_privacy"
 msgstr "Privacy"
 
-#: registration/templates/registration/base.html:36
+#: registration/templates/registration/base.html:40
 msgid "_site_notice"
 msgstr "Site Notice"
 
@@ -268,11 +267,21 @@ msgstr ""
 "Please confirm your registration via the link in the eMail that will be sent "
 "to you shortly. You can close this page now."
 
-#: registration/views.py:60
+#: registration/views.py:62
 msgid "booked_out"
 msgstr "booked out"
 
-#: registration/views.py:108
+#: registration/views.py:87
+msgid "Personal Information"
+msgstr ""
+
+#: registration/views.py:105
+msgid "privacy_notice"
+msgstr ""
+"I have received information regarding the <a href=\"privacy\">privacy "
+"notice</a> at the time of the inquiry."
+
+#: registration/views.py:118
 #, python-format
 msgid "max_seats_subj_exceeded_%(num_max)i"
 msgid_plural "max_seats_subj_exceeded_pl_%(num_max)i"
@@ -283,11 +292,11 @@ msgstr[1] ""
 "Only a maximum of %(num_max)i seats per person are allowed. Please contact "
 "the organizer directly for more seats."
 
-#: registration/views.py:120 registration/views.py:132
+#: registration/views.py:130 registration/views.py:142
 msgid "no_seats_event"
 msgstr "There are no more seats available for this event."
 
-#: registration/views.py:124 registration/views.py:137
+#: registration/views.py:134 registration/views.py:147
 #, python-format
 msgid "max_seats_exceeded_%(num_free)i"
 msgid_plural "max_seats_exceeded_pl_%(num_free)i"

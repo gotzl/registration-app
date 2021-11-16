@@ -33,10 +33,10 @@
     </div>
 
     <div style="height: 20px; background: #004a99;">
-        {% if site_notice %}
+        {% if privacy_notice %}
         <a style="float: right; padding-right: 10; color: #c9cac8" href="{% url 'privacy' %}">{% trans "_privacy" %}</a>
         {% endif %}
-        {% if privacy_notice %}
+        {% if site_notice %}
         <a style="float: right; padding-right: 10; color: #c9cac8" href="{% url 'site_notice' %}">{% trans "_site_notice" %}</a>
         {% endif %}
     </div>

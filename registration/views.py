@@ -6,6 +6,7 @@ from django.forms import models, ChoiceField
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy, reverse
+from django.utils.safestring import mark_safe
 from django.views import generic
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, ngettext_lazy
@@ -70,7 +71,7 @@ class CustomModelChoiceField(models.ModelChoiceField):
 
 
 class SubjectForm(forms.ModelForm):
-    layout = Layout(
+    layout_subject_extended = Layout(
         Row('event'),
         Row('num_seats'), 
         Fieldset('Personal Information',
@@ -78,13 +79,17 @@ class SubjectForm(forms.ModelForm):
             Row('email', 'phone'),
             Row(Span2('post_code'), Span5('city')),
             'address'),
-        ) if settings.SUBJECT_CLASS == 'SubjectExtended' else Layout(
+        )
+    layout_subject_base = Layout(
             Row('event'),
             Row('num_seats'),
-            Fieldset('Personal Information',
+            Fieldset(_('Personal Information'),
                      Row('given_name', 'name'),
                      Row('email')),
             )
+    layout = layout_subject_extended if settings.SUBJECT_CLASS == 'SubjectExtended' else layout_subject_base
+    if settings.PRIVACY_NOTICE:
+        layout.elements.append(Fieldset(_('_privacy'), Row('privacy')))
 
     def __init__(self, *args, **kwargs):
         super(SubjectForm, self).__init__(*args, **kwargs)
@@ -93,6 +98,10 @@ class SubjectForm(forms.ModelForm):
         if self.instance and instance.pk:
             self.fields['event'].disabled = True
             self.fields['email'].disabled = True
+        elif settings.PRIVACY_NOTICE:
+            self.fields['privacy'] = forms.BooleanField()
+            self.fields['privacy'].label = _('confirmed')
+            self.fields['privacy'].help_text = mark_safe(_('privacy_notice'))
 
     def clean_num_seats(self):
         instance = getattr(self, 'instance', None)

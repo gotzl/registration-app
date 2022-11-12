@@ -34,3 +34,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST_PASSWORD = '__mailuserpw__'
 # EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = '__from-email__'
+
+DEBUG = True
+PRIVACY_NOTICE = True

@@ -70,26 +70,28 @@ class CustomModelChoiceField(models.ModelChoiceField):
                        ChoiceField._set_choices)
 
 
-class SubjectForm(forms.ModelForm):
+def _gen_layout():
     layout_subject_extended = Layout(
         Row('event'),
-        Row('num_seats'), 
+        Row('num_seats'),
         Fieldset('Personal Information',
-            Row('given_name', 'name'),
-            Row('email', 'phone'),
-            Row(Span2('post_code'), Span5('city')),
-            'address'),
-        )
+                 Row('given_name', 'name'),
+                 Row('email', 'phone'),
+                 Row(Span2('post_code'), Span5('city')),
+                 'address'),
+    )
     layout_subject_base = Layout(
-            Row('event'),
-            Row('num_seats'),
-            Fieldset(_('Personal Information'),
-                     Row('given_name', 'name'),
-                     Row('email')),
-            )
-    layout = layout_subject_extended if settings.SUBJECT_CLASS == 'SubjectExtended' else layout_subject_base
-    if settings.PRIVACY_NOTICE:
-        layout.elements.append(Fieldset(_('_privacy'), Row('privacy')))
+        Row('event'),
+        Row('num_seats'),
+        Fieldset(_('Personal Information'),
+                 Row('given_name', 'name'),
+                 Row('email')),
+    )
+    return layout_subject_extended if settings.SUBJECT_CLASS == 'SubjectExtended' else layout_subject_base
+
+
+class SubjectForm(forms.ModelForm):
+    layout = _gen_layout()
 
     def __init__(self, *args, **kwargs):
         super(SubjectForm, self).__init__(*args, **kwargs)
@@ -98,10 +100,6 @@ class SubjectForm(forms.ModelForm):
         if self.instance and instance.pk:
             self.fields['event'].disabled = True
             self.fields['email'].disabled = True
-        elif settings.PRIVACY_NOTICE:
-            self.fields['privacy'] = forms.BooleanField()
-            self.fields['privacy'].label = _('confirmed')
-            self.fields['privacy'].help_text = mark_safe(_('privacy_notice'))
 
     def clean_num_seats(self):
         instance = getattr(self, 'instance', None)
@@ -162,6 +160,20 @@ class SubjectForm(forms.ModelForm):
         }
 
 
+class SubjectFormCreate(SubjectForm):
+    layout = _gen_layout()
+    if settings.PRIVACY_NOTICE:
+        layout.elements.append(Fieldset(_('_privacy'), Row('privacy')))
+
+    def __init__(self, *args, **kwargs):
+        super(SubjectFormCreate, self).__init__(*args, **kwargs)
+        # do not allow to modify the email and event for a registration
+        if settings.PRIVACY_NOTICE:
+            self.fields['privacy'] = forms.BooleanField()
+            self.fields['privacy'].label = _('confirmed')
+            self.fields['privacy'].help_text = mark_safe(_('privacy_notice'))
+
+
 class SubjectFormAdmin(forms.ModelForm):
     def clean_num_seats(self):
         instance = getattr(self, 'instance', None)
@@ -183,7 +195,7 @@ class SubjectFormAdmin(forms.ModelForm):
 
 
 class CreateSubjectView(EventsAvailableMixin, generic.CreateView):
-    form_class = SubjectForm
+    form_class = SubjectFormCreate
     template_name = 'registration/subject_form_create.html'
     success_url = reverse_lazy('submitted')
 
